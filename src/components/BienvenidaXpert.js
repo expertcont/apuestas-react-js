@@ -18,32 +18,12 @@ const BienvenidaXpert = ({ onStartClick }) => {
     //Aqui se leen parametros en caso lleguen
     useEffect( ()=> {
       if (isAuthenticated && user && user.email) {
-        //Verificar Estudios Contables registrados
-        cargaEstudiosAnfitrion();
+        //Carga datos iniciales
+        
 
       }  
     },[isAuthenticated, user]);
 
-    const handleChange = e => {
-      setAnfitrionSeleccionado(e.target.value);
-    }
-  
-    const cargaEstudiosAnfitrion = () =>{
-      console.log(`${back_host}/usuario/estudios/${user.email}`);
-      axios
-      .get(`${back_host}/usuario/estudios/${user.email}`)
-      .then((response) => {
-        //Cargar Arreglo
-        setEstudioSelect(response.data);
-        // Establece el primer valor del arreglo como valor inicial
-        if (response.data.length > 0) {
-          setAnfitrionSeleccionado(response.data[0].id_usuario); 
-        }
-      })
-      .catch((error) => {
-          console.log(error);
-      });
-    }
 
         
     const centeredLogoStyle = {
@@ -74,7 +54,7 @@ const BienvenidaXpert = ({ onStartClick }) => {
                   }}
             >
                 <Typography variant='h5' color='white' textAlign='center'>
-                    Facturación/Contabilidad Móvil
+                    Apuestas Futbol Xpert
                 </Typography>
                 
                 <CardContent >
@@ -105,24 +85,6 @@ const BienvenidaXpert = ({ onStartClick }) => {
 
                       { isAuthenticated ? 
                       ( <>
-                       <Select
-                              labelId="estudios_select"
-                              size="small"
-                              //id={tipo_op}
-                              value={idAnfitrionSeleccionado}
-                              name="estudios_select"
-                              sx={{display:'block',
-                              margin:'.1rem 0', color:"white", textAlign:'center'}}
-                              //label="Operacion"
-                              onChange={handleChange}
-                            >
-                              {   
-                                  estudios_select.map(elemento => (
-                                  <MenuItem key={elemento.id_usuario} value={elemento.id_usuario} >
-                                    {elemento.razon_social}
-                                  </MenuItem>)) 
-                              }
-                      </Select>
 
                       <Button variant='contained' 
                                               color='primary' 

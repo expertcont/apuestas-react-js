@@ -28,7 +28,6 @@ import axios from 'axios';
 
 import { useAuth0 } from '@auth0/auth0-react'; //new para cargar permisos luego de verificar registro en bd
 import BotonExcelVentas from '../BotonExcelVentas';
-import AdminFileProducto from './AdminFileProducto';
 import { saveAs } from 'file-saver';
 
 export default function AdminApuestaList() {
@@ -473,9 +472,6 @@ export default function AdminApuestaList() {
         </Tooltip>
       </Grid>
 
-      <Grid item xs={isSmallScreen ? 12 : 10}>
-        <AdminFileProducto datosCarga={datosCarga} onActualizaImportaOK={handleActualizaImportaOK} urlApiDestino='/ad_equipoexcel'></AdminFileProducto>          
-      </Grid>
 
       <Grid item xs={isSmallScreen ? 12 : 12} >
           <TextField fullWidth variant="outlined" color="success" size="small"

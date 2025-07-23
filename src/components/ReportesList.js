@@ -2,11 +2,8 @@ import React from 'react';
 import { useEffect, useState, useMemo, useCallback } from "react"
 import { Grid, Button,useMediaQuery,Select, MenuItem} from "@mui/material";
 import { useNavigate,useParams } from "react-router-dom";
-import DeleteIcon from '@mui/icons-material/Delete';
 import FindIcon from '@mui/icons-material/FindInPage';
 
-import swal from 'sweetalert';
-import swal2 from 'sweetalert2'
 import Datatable, {createTheme} from 'react-data-table-component';
 import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
@@ -18,16 +15,9 @@ import 'styled-components';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Tooltip from '@mui/material/Tooltip';
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import axios from 'axios';
 
 import { useAuth0 } from '@auth0/auth0-react'; //new para cargar permisos luego de verificar registro en bd
-import BotonExcelVentas from './BotonExcelVentas';
-import { HojaTrabColumnas } from './ColumnasAsiento';
-import { AnalisisCuentaColumnas } from './ColumnasAsiento';
-import { CuentasCorrientesColumnas } from './ColumnasAsiento';
-import { CajaColumnas } from './ColumnasAsiento';
-import { saveAs } from 'file-saver';
 import IconButton from '@mui/material/IconButton';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 
@@ -400,13 +390,12 @@ export default function AsientoList() {
     //Secundario despues de seleccion en toggleButton
     let columnasEspecificas;
     if (st_valorVista===null || st_valorVista===undefined || st_valorVista===''){
-      columnasEspecificas = AnalisisCuentaColumnas;
+      //columnasEspecificas = AnalisisCuentaColumnas;
     }else{
-      columnasEspecificas = 
+      /*columnasEspecificas = 
           st_valorVista === 'analisis' ? AnalisisCuentaColumnas
-        : st_valorVista === 'hojatrab' ? HojaTrabColumnas
         : st_valorVista === 'cuentascorrientes' ? CuentasCorrientesColumnas
-        : CajaColumnas;
+        : CajaColumnas;*/
     }
 
     setColumnas([...columnasEspecificas]);

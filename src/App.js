@@ -2,7 +2,6 @@ import {BrowserRouter,Routes,Route} from "react-router-dom";
 import {Container} from "@mui/material";
 import NavBar from "./components/NavBar";
 import { useAuth0 } from '@auth0/auth0-react'; //new para cargar permisos luego de verificar registro en bd
-import Inicio from "./components/Inicio";
 import { useEffect } from 'react';
 
 import ReportesList from "./components/ReportesList";
@@ -52,8 +51,6 @@ function App(props) {
 
           <Route path="/reporte/:id_anfitrion" element={<ReportesList />} />
 
-
-          <Route path="/:id_anfitrion" element={<Inicio />} />
 
 
           {/*Edit Route */}
