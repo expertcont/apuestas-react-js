@@ -3,15 +3,13 @@ import logo from '../Logo02.png'; // Importa el logo
 import {Grid,Card,Select,MenuItem,CardContent,Typography,Button} from '@mui/material'
 import { useAuth0 } from '@auth0/auth0-react'; //new para cargar permisos luego de verificar registro en bd
 import {useState,useEffect} from 'react';
-import axios from 'axios';
 import LoginPerfil from "./LoginPerfil" //new
 import LoginLogoutBoton from "./LoginLogoutBoton" //new
 
 
 const BienvenidaXpert = ({ onStartClick }) => {
-  const back_host = process.env.BACK_HOST || "https://xpertcont-backend-js-production-50e6.up.railway.app";
+  const back_host = process.env.REACT_APP_BACK_HOST || "https://xpertcont-backend-js-production-50e6.up.railway.app";
   const {user, isAuthenticated } = useAuth0();
-  const [estudios_select,setEstudioSelect] = useState([]);
 
   const [idAnfitrionSeleccionado, setAnfitrionSeleccionado] = useState('');
 
@@ -19,7 +17,7 @@ const BienvenidaXpert = ({ onStartClick }) => {
     useEffect( ()=> {
       if (isAuthenticated && user && user.email) {
         //Carga datos iniciales
-        
+        setAnfitrionSeleccionado(user.email);
 
       }  
     },[isAuthenticated, user]);
@@ -54,7 +52,7 @@ const BienvenidaXpert = ({ onStartClick }) => {
                   }}
             >
                 <Typography variant='h5' color='white' textAlign='center'>
-                    Apuestas Futbol Xpert
+                    XpertBet
                 </Typography>
                 
                 <CardContent >

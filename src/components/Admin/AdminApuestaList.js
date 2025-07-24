@@ -6,8 +6,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FindIcon from '@mui/icons-material/FindInPage';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import { blueGrey } from '@mui/material/colors';
-import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
-import FolderDeleteIcon from '@mui/icons-material/FolderDelete';          
 
 import IconButton from '@mui/material/IconButton';
 import swal from 'sweetalert';
@@ -29,6 +27,7 @@ import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react'; //new para cargar permisos luego de verificar registro en bd
 import BotonExcelVentas from '../BotonExcelVentas';
 import { saveAs } from 'file-saver';
+
 
 export default function AdminApuestaList() {
   //Control de useffect en retroceso de formularios
@@ -60,16 +59,7 @@ export default function AdminApuestaList() {
     },
   }, 'dark');
 
-  ///////////////////////////////////////////////////
-  /*function exportToExcel(data) {
-    const worksheet = utils.json_to_sheet(data);
-    const workbook = utils.book_new();
-    utils.book_append_sheet(workbook, worksheet, 'Datos');
-    writeFile(workbook, 'datos.xlsx');
-  }*/
-
-  //const back_host = process.env.BACK_HOST || "http://localhost:4000";
-  const back_host = process.env.BACK_HOST || "https://xpertcont-backend-js-production-50e6.up.railway.app";
+  const back_host = process.env.REACT_APP_BACK_HOST;
   //experimento
   const [updateTrigger, setUpdateTrigger] = useState({});
 
@@ -79,7 +69,6 @@ export default function AdminApuestaList() {
   const [registrosdet,setRegistrosdet] = useState([]);
   const [tabladet,setTabladet] = useState([]);  //Copia de los registros: Para tratamiento de filtrado
   const [valorBusqueda, setValorBusqueda] = useState(""); //txt: rico filtrado
-  const [permisosComando, setPermisosComando] = useState([]); //MenuComandos
   const {user, isAuthenticated } = useAuth0();
 
   // Agrega íconos al inicio de cada columna
@@ -88,16 +77,16 @@ export default function AdminApuestaList() {
       name: '',
       width: '40px',
       cell: (row) => (
-        pVenta0101 ? (
+        
           <DriveFileRenameOutlineIcon
-            onClick={() => handleUpdate(row.id_equipo)}
+            onClick={() => handleUpdate(row.id)}
             style={{
               cursor: 'pointer',
               color: 'skyblue',
               transition: 'color 0.3s ease',
             }}
           />
-        ) : null
+        
       ),
       allowOverflow: true,
       button: true,
@@ -107,7 +96,7 @@ export default function AdminApuestaList() {
       width: '40px',
       cell: (row) => (
           <DeleteIcon
-            onClick={() => handleDelete(row.id_equipo)}
+            onClick={() => handleDelete(row.id)}
             style={{
               cursor: 'pointer',
               color: 'orange',
@@ -119,69 +108,49 @@ export default function AdminApuestaList() {
       button: true,
     },
     { name:'ID', 
-      selector:row => row.id_equipo,
+      selector:row => row.id,
       sortable: true,
       width: '110px'
       //key:true
     },
-    { name:'NOMBRE', 
-      selector:row => row.nombre,
-      width: '250px',
+    { name:'EVENTO', 
+      selector:row => row.evento,
+      width: '200px',
       sortable: true
     },
-    { name:'DESCRIPCION', 
-      selector:row => row.descripcion,
+    { name:'LIGA', 
+      selector:row => row.liga,
+      width: '150px',
+      sortable: true
+    },
+    { name:'PAIS', 
+      selector:row => row.pais,
+      width: '150px',
+      sortable: true
+    },
+
+    { name:'MONTO', 
+      selector:row => row.monto,
       width: '100px',
       sortable: true
     },
-    { name:'PLACA', 
-      selector:row => row.placa,
-      width: '100px',
+    { name:'FECHA APUESTA', 
+      selector:row => row.fecha_apuesta,
+      width: '150px',
       sortable: true
     },
-    { name:'MARCA', 
-      selector:row => row.marca,
-      width: '100px',
+    { name:'APUESTA POR', 
+      selector:row => row.apuesta_estado,
+      width: '150px',
       sortable: true
     },
-    { name:'MODELO', 
-      selector:row => row.modelo,
-      width: '100px',
-      sortable: true
-    },
-    { name:'SERIE', 
-      selector:row => row.serie,
-      width: '100px',
-      sortable: true
-    },
-    { name:'PREC.DIA', 
-        selector:row => row.precio_dia,
-        width: '100px',
-        sortable: true
-    },
-    { name:'PREC.MES', 
-        selector:row => row.precio_mes,
-        width: '100px',
-        sortable: true
-    },
-    { name:'ESTADO', 
-        selector:row => row.estado,
-        width: '100px',
-        sortable: true
-    },
-    { name:'ORIGEN', 
-        selector:row => row.origen,
-        width: '100px',
+    { name:'RESULTADO', 
+        selector:row => row.apuesta_resultado,
+        width: '150px',
         sortable: true
     },
     
   ];
-
-  //Permisos Nivel 02 - Comandos (Buttons)
-  const [pVenta0101, setPVenta0101] = useState(false); //Nuevo (Casi libre)
-  const [pVenta0102, setPVenta0102] = useState(false); //Modificar (Restringido)
-  const [pVenta0103, setPVenta0103] = useState(false); //ELiminar (Restringido)
-  const [pVenta0104, setPVenta0104] = useState(false); //Eliminar Masivo (Casi Nunca solo el administrador)
 
   // valores adicionales para Carga Archivo
   const [datosCarga, setDatosCarga] = useState({
@@ -193,21 +162,21 @@ export default function AdminApuestaList() {
         setSelectedRows(state.selectedRows);
     }, []);
 
-  const handleUpdate = (id_equipo) => {
+  const handleUpdate = (id) => {
     //Mostrar formulario para edicion
     if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)) {
         console.log("Estás usando un dispositivo móvil!!");
-        //Validamos libro a mostrar
-        navigate(`/ad_equipo/${params.id_anfitrion}/${params.id_invitado}/${params.documento_id}/${id_equipo}/edit`);
+        //Validamos si es movil, para que no falle el enlace
+        navigate(`/apuesta/${params.id_anfitrion}/${id}`);
     } else {
-        navigate(`/ad_equipo/${params.id_anfitrion}/${params.id_invitado}/${params.documento_id}/${id_equipo}/edit`);
+        navigate(`/apuesta/${params.id_anfitrion}/${id}`);
     }    
   };
-  const handleDelete = (id_equipo) => {
+  const handleDelete = (id) => {
     //console.log(num_asiento);
-    confirmaEliminacion(params.id_anfitrion,params.documento_id,id_equipo);
+    confirmaEliminacion(id);
   };
-  const confirmaEliminacion = async(sAnfitrion,sDocumentoId,sIdEquipo)=>{
+  const confirmaEliminacion = async(sId)=>{
     await swal({
       title:"Eliminar Registro",
       text:"Seguro ?",
@@ -215,11 +184,10 @@ export default function AdminApuestaList() {
       buttons:["No","Si"]
     }).then(respuesta=>{
         if (respuesta){
-          //console.log(cod,serie,num,elem,item);
-          eliminarRegistroSeleccionado(sAnfitrion,sDocumentoId,sIdEquipo);
+          eliminarRegistroSeleccionado(sId);
           setToggleCleared(!toggleCleared);
           setRegistrosdet(registrosdet.filter(
-                          registrosdet => registrosdet.id_equipo !== sIdEquipo
+                          registrosdet => registrosdet.id !== sId
                           ));
           setTimeout(() => { // Agrega una función para que se ejecute después del tiempo de espera
               setUpdateTrigger(Math.random());//experimento
@@ -233,9 +201,9 @@ export default function AdminApuestaList() {
       }
     })
   };
-  const eliminarRegistroSeleccionado = async (sAnfitrion,sDocumentoId,sIdEquipo) => {
+  const eliminarRegistroSeleccionado = async (sId) => {
     //En ventas solo se eliminan, detalle-cabecera
-    await fetch(`${back_host}/ad_equipo/${sAnfitrion}/${sDocumentoId}/${sIdEquipo}`, {
+    await fetch(`${back_host}/apuesta/${sId}`, {
         method:"DELETE"
     });
   };
@@ -243,9 +211,8 @@ export default function AdminApuestaList() {
   ///////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////
   const cargaRegistro = async () => {
-    var response;
     //Cargamos productos
-    response = await fetch(`${back_host}/ad_equipo/${params.id_anfitrion}/${params.documento_id}`);
+    const response = await fetch(`${back_host}/apuesta/${params.id_anfitrion}`);
     
     const data = await response.json();
     setRegistrosdet(data);
@@ -278,65 +245,18 @@ export default function AdminApuestaList() {
     setRegistrosdet(resultadosBusqueda);
   };
   
-  const cargaPermisosMenuComando = async(idMenu)=>{
-    if (params.id_anfitrion === params.id_invitado){
-      setPVenta0101(true); //nuevo
-      setPVenta0102(true); //modificar
-      setPVenta0103(true); //eliminar
-      setPVenta0104(true); //eliminar masivo
-    }
-    else{
-        //Realiza la consulta a la API de permisos
-        fetch(`${back_host}/seguridad/${params.id_anfitrion}/${params.id_invitado}/${idMenu}`, {
-          method: 'GET'
-        })
-        .then(response => response.json())
-        .then(permisosData => {
-          // Guarda los permisos en el estado
-          setPermisosComando(permisosData);
-          console.log(permisosComando);
-          let tienePermiso;
-          // Verifica si existe el permiso de acceso 'ventas'
-          tienePermiso = permisosData.some(permiso => permiso.id_comando === '01-01'); //Nuevo
-          if (tienePermiso) {
-            setPVenta0101(true);
-          }
-
-          tienePermiso = permisosData.some(permiso => permiso.id_comando === '01-02'); //Modificar
-          if (tienePermiso) {
-            setPVenta0102(true);
-          }else {setPVenta0102(false);}
-
-          tienePermiso = permisosData.some(permiso => permiso.id_comando === '01-03'); //Eliminar
-          if (tienePermiso) {
-            setPVenta0103(true);
-          }else {setPVenta0103(false);}
-          ////////////////////////////////////////////////
-
-          //setUpdateTrigger(Math.random());//experimento
-        })
-        .catch(error => {
-          console.log('Error al obtener los permisos:', error);
-        });
-    }
-  }
-
-  // Función que se pasa como prop al componente.js
-  const handleActualizaImportaOK = () => {
-    //console.log('valorVista,periodo_trabajo,contabilidad_trabajo:', valorVista,periodo_trabajo,contabilidad_trabajo);
-    //cargaRegistro(valorVista,periodo_trabajo,contabilidad_trabajo);
-    setUpdateTrigger(Math.random());//experimento para actualizar el dom
-    // Puedes realizar otras operaciones con la cantidad de filas si es necesario
-  };
   
+ 
   //////////////////////////////////////////////////////////
   useEffect( ()=> {
         //cargar registro
-      cargaRegistro();
+        console.log("process.env.REACT_APP_BACK_HOST: ",process.env.REACT_APP_BACK_HOST);
+
+        cargaRegistro();
       /////////////////////////////
       //NEW codigo para autenticacion y permisos de BD
       if (isAuthenticated && user && user.email) {
-        cargaPermisosMenuComando('01');
+        
       }
       setDatosCarga(prevState => ({ ...prevState, id_anfitrion: params.id_anfitrion }));
       setDatosCarga(prevState => ({ ...prevState, documento_id: params.documento_id }));
@@ -366,46 +286,6 @@ export default function AdminApuestaList() {
     }
   };
 
-  const handleDeleteOrigen = async (sAnfitrion,sDocumentoId) => {
-    const { value: selectedOrigen } = await swal2.fire({
-      title: 'Eliminar registros',
-      //text: 'Selecciona el origen para la eliminación masiva:',
-      input: 'select',
-      icon: 'warning',
-      //color: 'orange',
-      inputOptions: {
-        EXCEL: 'EXCEL',
-        MANUAL: 'MANUAL',
-        // Agrega las opciones según los valores de "origen" de tu tabla
-      },
-      inputPlaceholder: 'Selecciona el origen',
-      showCancelButton: true,
-      confirmButtonText: 'Eliminar',
-      cancelButtonText: 'Cancelar',
-      inputValidator: (value) => {
-        return new Promise((resolve) => {
-          if (value === '') {
-            resolve('Debes seleccionar un origen');
-          } else {
-            resolve();
-          }
-        });
-      },
-    });
-
-    // Si el usuario hace clic en "Eliminar" y selecciona un origen
-    if (selectedOrigen) {
-      // Aquí puedes realizar la lógica para eliminar registros masivamente con el origen seleccionado
-      //console.log('Eliminar registros con origen:', selectedOrigen);
-      await fetch(`${back_host}/ad_equipomasivo/${sAnfitrion}/${sDocumentoId}/${selectedOrigen}`, {
-        method:"DELETE"
-      });
-
-      setTimeout(() => { // Agrega una función para que se ejecute después del tiempo de espera
-        setUpdateTrigger(Math.random());//experimento
-      }, 200);
-    }
-  };
   
  return (
   <>
@@ -425,10 +305,10 @@ export default function AdminApuestaList() {
                           style={{ padding: '0px', color: blueGrey[700] }}
                           onClick={() => {
                             if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)) {
-                              //movil
-                                navigate(`/ad_equipo/${params.id_anfitrion}/${params.id_invitado}/${params.documento_id}/new`);
+                              //version movil, esperando ... ;) 
+                                navigate(`/apuesta/${params.id_anfitrion}/new`);
                             } else {
-                                navigate(`/ad_equipo/${params.id_anfitrion}/${params.id_invitado}/${params.documento_id}/new`);
+                                navigate(`/apuesta/${params.id_anfitrion}/new`);
                             }
                           }}
           >
@@ -445,31 +325,11 @@ export default function AdminApuestaList() {
       </Grid>
       
       <Grid item xs={isSmallScreen ? 1.2 : 0.5}  >    
-        <Tooltip title='DESCARGA XLS VACIO' >
-            <IconButton color="primary" 
-                            //style={{ padding: '0px'}}
-                            style={{ padding: '0px', color: blueGrey[700] }}
-                            onClick={() => {
-                                  handleDescargarExcelVacio();
-                            }}
-            >
-                  <KeyboardDoubleArrowDownIcon style={{ fontSize: '40px' }}/>
-            </IconButton>
-        </Tooltip>
+
       </Grid>
       
       <Grid item xs={isSmallScreen ? 1.2 : 0.5}  >    
-        <Tooltip title='ELIMINAR MASIVO' >
-            <IconButton color="warning" 
-                            //style={{ padding: '0px'}}
-                            style={{ padding: '0px', color: blueGrey[700] }}
-                            onClick={() => {
-                              handleDeleteOrigen(params.id_anfitrion,params.documento_id)
-                            }}
-            >
-                  <FolderDeleteIcon style={{ fontSize: '40px' }}/>
-            </IconButton>
-        </Tooltip>
+
       </Grid>
 
 
@@ -479,7 +339,7 @@ export default function AdminApuestaList() {
                                       sx={{display:'block',
                                             margin:'.0rem 0'}}
                                       name="busqueda"
-                                      placeholder='FILTRAR:  RUC   RAZON SOCIAL   COMPROBANTE'
+                                      placeholder='FILTRAR: EQUIPO DE FUTBOL'
                                       onChange={actualizaValorFiltro}
                                       inputProps={{ style:{color:'white'} }}
                                       InputProps={{

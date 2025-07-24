@@ -6,8 +6,7 @@ import {useNavigate, useParams} from 'react-router-dom';
 import axios from 'axios';
 
 export default function ProductoForm() {
-  //const back_host = process.env.BACK_HOST || "http://localhost:4000";
-  const back_host = process.env.BACK_HOST || "https://xpertcont-backend-js-production-50e6.up.railway.app";  
+  const back_host = process.env.REACT_APP_BACK_HOST || "https://xpertcont-backend-js-production-50e6.up.railway.app";  
   //Select(Combos) para llenar, desde tabla
   const [unidad_select,setUnidadSelect] = useState([]);
   

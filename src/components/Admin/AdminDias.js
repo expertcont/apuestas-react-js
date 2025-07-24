@@ -11,7 +11,7 @@ const AdminDias = ({ period, onDaySelect }) => {
   const [days, setDays] = useState([]);
   const [selectedDay, setSelectedDay] = useState("");
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (!period) return;
 
     const [year, month] = period.split("-").map(Number);
@@ -33,6 +33,24 @@ const AdminDias = ({ period, onDaySelect }) => {
       onDaySelect(defaultDay);
     }
   }, [period]); // Solo depende de `period`
+  */
+  useEffect(() => {
+    if (!period) return;
+
+    const [year, month] = period.split("-").map(Number);
+
+    // Obtiene siempre todos los días del mes sin importar si es el mes actual
+    const daysInMonth = getDaysInMonth(year, month);
+
+    const dayList = Array.from({ length: daysInMonth }, (_, i) => (i + 1).toString());
+    setDays(dayList);
+
+    if (!selectedDay) {
+      const defaultDay = daysInMonth.toString(); // último día del mes por defecto
+      setSelectedDay(defaultDay);
+      onDaySelect(defaultDay);
+    }
+  }, [period]);
 
   const handleDayChange = (event, newDay) => {
     if (newDay) {

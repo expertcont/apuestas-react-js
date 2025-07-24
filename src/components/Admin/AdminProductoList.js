@@ -3,16 +3,8 @@ import { useEffect, useState, useMemo, useCallback } from "react"
 import { Modal,Grid, Button,useMediaQuery,Select, MenuItem} from "@mui/material";
 import { useNavigate,useParams } from "react-router-dom";
 import DeleteIcon from '@mui/icons-material/Delete';
-import ClearIcon from '@mui/icons-material/Clear';
-import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import FindIcon from '@mui/icons-material/FindInPage';
-import UpdateIcon from '@mui/icons-material/UpdateSharp';
-import Add from '@mui/icons-material/Add';
-import FindInPageIcon from '@mui/icons-material/FindInPage';
 import AddBoxIcon from '@mui/icons-material/AddBox';
-import BoltIcon from '@mui/icons-material/Bolt';
-import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
-import DownloadIcon from '@mui/icons-material/Download';
 import { blueGrey } from '@mui/material/colors';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import FolderDeleteIcon from '@mui/icons-material/FolderDelete';          
@@ -72,16 +64,8 @@ export default function AdminProductoList() {
     },
   }, 'dark');
 
-  ///////////////////////////////////////////////////
-  /*function exportToExcel(data) {
-    const worksheet = utils.json_to_sheet(data);
-    const workbook = utils.book_new();
-    utils.book_append_sheet(workbook, worksheet, 'Datos');
-    writeFile(workbook, 'datos.xlsx');
-  }*/
-
-  //const back_host = process.env.BACK_HOST || "http://localhost:4000";
-  const back_host = process.env.BACK_HOST || "https://xpertcont-backend-js-production-50e6.up.railway.app";
+    
+  const back_host = process.env.REACT_APP_BACK_HOST;
   //experimento
   const [updateTrigger, setUpdateTrigger] = useState({});
 

@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 
 import ReportesList from "./components/ReportesList";
 
+import AdminPartidoList from "./components/Admin/AdminPartidoList";
 import AdminApuestaList from "./components/Admin/AdminApuestaList";
 import AdminApuestaForm from "./components/Admin/AdminApuestaForm";
 
@@ -44,6 +45,8 @@ function App(props) {
          { /* Agregar desde Panel (un registro01 Libre)
                Agregar Clonado desde Panel (un registro01 con Numero Orden y datos adicionales)
                Agregar desde Form Orden (un registro01 con Numero Orden)   */ }
+
+          <Route path="/partido/:id_anfitrion" element={<AdminPartidoList />} />
 
           <Route path="/apuesta/:id_anfitrion" element={<AdminApuestaList />} />
           <Route path="/apuesta/:id_anfitrion/new" element={<AdminApuestaForm />} />

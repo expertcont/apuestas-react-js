@@ -125,35 +125,14 @@ export default function NavBar(props) {
                       <HomeIcon />
                     </IconButton>
 
-
-                    <Tooltip title="ADMIN Apuestas">
-                    <IconButton  
-                        sx={{
-                          color: selectedButton === 'icono02' ? 'primary.main' : blueGrey[300],flexGrow:1
-                        }}
-                        aria-label="upload picture" component="label" size="large"
-                                onClick = {()=> {
-                                    //el ventalist se encargara de verificar permisos Comandos, con email
-                                    //cuidado estamos enviando el periodo y el ruc de la contabilidad inicial del anfitrion
-                                    console.log(`/ad_venta/${props.idAnfitrion}/${props.idInvitado}/${periodo_trabajo}/${contabilidad_trabajo}`);
-                                    navigate(`/ad_venta/${props.idAnfitrion}/${props.idInvitado}/${periodo_trabajo}/${contabilidad_trabajo}`);
-                                    handleClick('icono02');
-                                                }
-                                }
-                    >
-                      <ShoppingCartIcon />
-                    </IconButton>
-                    </Tooltip>
-
-
-                    <Tooltip title="REPORTES">
+                    <Tooltip title="PARTIDOS FUTBOL">
                     <IconButton  
                         sx={{
                           color: selectedButton === 'icono05' ? 'primary.main' : blueGrey[300],flexGrow:1
                         }}
                         color="primary" aria-label="upload picture" component="label" size="large"
                                 onClick = {()=> {
-                                  navigate(`/reporte/${props.idAnfitrion}/${props.idInvitado}`);
+                                  navigate(`/partido/${props.idAnfitrion}`);
                                   handleClick('icono05');
                                                 }
                                 }
@@ -164,6 +143,26 @@ export default function NavBar(props) {
                       <InsertChartIcon />
                     </IconButton>
                     </Tooltip>
+
+
+                    <Tooltip title="ADMIN Apuestas">
+                    <IconButton  
+                        sx={{
+                          color: selectedButton === 'icono02' ? 'primary.main' : blueGrey[300],flexGrow:1
+                        }}
+                        aria-label="upload picture" component="label" size="large"
+                                onClick = {()=> {
+                                    //el ventalist se encargara de verificar permisos Comandos, con email
+                                    //cuidado estamos enviando el periodo y el ruc de la contabilidad inicial del anfitrion
+                                    navigate(`/apuesta/${props.idAnfitrion}`);
+                                    handleClick('icono02');
+                                                }
+                                }
+                    >
+                      <ShoppingCartIcon />
+                    </IconButton>
+                    </Tooltip>
+
 
 
             </Toolbar>
